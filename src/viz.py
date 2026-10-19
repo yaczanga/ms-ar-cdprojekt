@@ -8,7 +8,9 @@ from __future__ import annotations
 
 import matplotlib.pyplot as plt
 import pandas as pd
+from matplotlib.lines import Line2D
 from matplotlib.ticker import FuncFormatter
+from matplotlib.transforms import offset_copy
 
 from . import config, plot_style as style
 
@@ -17,6 +19,10 @@ style.apply_style()
 # Spacja nierozdzielajaca jako separator tysiecy, zgodnie z zapisem liczb
 # w pozostalych napisach projektu.
 NBSP = " "
+
+
+# Odsuniecie znacznika transakcji od krzywej, w punktach typograficznych.
+MARKER_OFFSET_PT = 11
 
 
 def _zloty_axis(ax) -> None:
@@ -100,6 +106,12 @@ def plot_strategy(equity: pd.Series, benchmark: pd.Series, log: pd.DataFrame,
     odniesieniem. Znaczniki transakcji nie sa trzecia seria, tylko adnotacja na
     krzywej strategii - niosa barwe tekstu, a kupno od sprzedazy odroznia
     ksztalt, czytelny takze w druku czarno-bialym.
+
+    Kupno stoi POD krzywa, sprzedaz NAD nia. Postawione na krzywej zlewaja sie
+    w jeden znak wszedzie tam, gdzie wyjscie nastepuje kilka tygodni po
+    wejsciu - a takich par jest w tym przebiegu wiekszosc. Odsuniecie liczone
+    jest w punktach typograficznych, wiec nie przesuwa znacznika wzgledem daty
+    ani wartosci portfela.
     """
     fig, ax = plt.subplots(figsize=style.WIDE)
 
@@ -108,15 +120,28 @@ def plot_strategy(equity: pd.Series, benchmark: pd.Series, log: pd.DataFrame,
     ax.plot(equity.index, equity.values, color=style.ACCENT,
             linewidth=2.0, label="Strategia MS-AR")
 
-    for operation, marker in (("KUP", "^"), ("SPRZEDAJ", "v")):
+    markers = (("KUP", "^", -MARKER_OFFSET_PT, "Kupno"),
+               ("SPRZEDAJ", "v", MARKER_OFFSET_PT, "Sprzedaż"))
+    handles = []
+    for operation, marker, offset, label in markers:
+        shifted = offset_copy(ax.transData, fig=fig, y=offset, units="points")
         dates = [d for d in log.index[log["Operacja"] == operation] if d in equity.index]
         if dates:
             ax.scatter(dates, equity.loc[dates], marker=marker, s=55,
-                       color=style.TEXT_SECONDARY, zorder=5)
+                       color=style.TEXT_SECONDARY, zorder=5, transform=shifted)
+        handles.append(
+            Line2D([], [], marker=marker, linestyle="none", markersize=8,
+                   color=style.TEXT_SECONDARY, label=label)
+        )
 
     ax.set_title("Symulacja strategii na próbie testowej")
     ax.set_ylabel("wartość portfela (zł)")
-    ax.legend(loc="upper left")
+    # Dwie legendy: serie u gory, ksztalty znacznikow nizej. W jednej ramce
+    # znacznik czytalby sie jak trzecia seria, a nie jak adnotacja na krzywej.
+    series_legend = ax.legend(loc="upper left")
+    ax.add_artist(series_legend)
+    ax.legend(handles=handles, loc="upper left", bbox_to_anchor=(0.0, 0.80),
+              labelcolor=style.TEXT_SECONDARY)
     _zloty_axis(ax)
 
     fig.tight_layout()

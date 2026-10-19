@@ -100,6 +100,3 @@ venv\Scripts\python -m pytest
 
 Sześć testów pilnuje założeń, na których opiera się wniosek, a nie tego, czy kod się wykonuje: okno estymacji kończy się dokładnie na tygodniu sygnału, zlecenie realizuje się po cenie otwarcia następnej sesji, reżim rozpoznawany jest po wariancji a nie po numerze stanu, wiersze macierzy przejścia sumują się do jedności, liczebności próby wynikają z danych, a prowizja jest zerowa. Każdy sprawdzono mutacją kodu - po wprowadzeniu błędu, przed którym ma chronić, test zawodzi.
 
-## Dane osobowe
-
-Repozytorium nie zawiera danych osobowych. Katalog `docs/` jest wykluczony z repozytorium przez `.gitignore`.
