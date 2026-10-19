@@ -9,7 +9,6 @@ Napisy na rysunku maja diakrytyki, kod i komentarze nie.
 from __future__ import annotations
 
 import matplotlib as mpl
-import numpy as np
 from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.ticker import FuncFormatter
 
@@ -41,24 +40,6 @@ ORDINAL_RAMP = ['#8fb4c7', '#6b9db5', '#3a7694', '#1a5572', '#06324a']
 # (slupek skumulowany, mapa, diagram przeplywu). Zielen i purpura nie moga
 # sasiadowac: separacja przy deuteranopii 7,6 wobec progu 8.
 CATEGORICAL = ['#009e73', '#e69f00', '#0072b2', '#56b4e9', '#f0e442', '#cc79a7']
-
-
-def categorical_map(keys, accent_key=None) -> dict:
-    """Stala mapa ``klucz -> barwa`` dla kategorii powyzej limitu dwoch.
-
-    Kolejnosc kluczy, nie wielkosc danych, rozstrzyga o barwie. ``accent_key``
-    dostaje ACCENT: kategoria bedaca przedmiotem badania.
-    """
-    keys = list(keys)
-    obce = [k for k in keys if k != accent_key]
-    if len(obce) > len(CATEGORICAL):
-        raise ValueError(
-            f'Paleta kategorialna ma {len(CATEGORICAL)} barw, zadano '
-            f'{len(obce)}. Zagreguj najslabsze kategorie do pozycji zbiorczej.')
-    mapa = {k: CATEGORICAL[i] for i, k in enumerate(obce)}
-    if accent_key is not None:
-        mapa[accent_key] = ACCENT
-    return mapa
 
 
 # --- Rampy ciagle ------------------------------------------------------
@@ -127,24 +108,6 @@ def apply_style() -> None:
     })
 
 
-def series_colors(n: int) -> list[str]:
-    """Barwy dla n serii - lub blad, gdy n przekracza pojemnosc systemu.
-
-    Trzeciej serii nie tworzymy kolejnym odcieniem; alternatywy w komunikacie
-    bledu.
-    """
-    if n <= 0:
-        raise ValueError('Liczba serii musi byc dodatnia.')
-    if n == 1:
-        return [BLUE]
-    if n == 2:
-        return [BLUE, VERMILION]
-    raise ValueError(
-        f'System niesie tozsamosc dwiema barwami, zadano {n}. Uzyj '
-        f'ORDINAL_RAMP (kategorie uporzadkowane), wzorca ACCENT na tle MUTED '
-        f'(jedna seria wyrozniona) albo rozbij na osobne panele.')
-
-
 def decimal_comma(ax, axis: str = 'y', places: int = 2) -> None:
     """Zamienia kropke dziesietna na przecinek na podanych osiach."""
     formatter = FuncFormatter(
@@ -154,19 +117,3 @@ def decimal_comma(ax, axis: str = 'y', places: int = 2) -> None:
     if 'y' in axis:
         ax.yaxis.set_major_formatter(formatter)
 
-
-def value_labels(ax, places: int = 3, suffix: str = '', **kwargs) -> None:
-    """Podpisuje slupki wartoscia, z przecinkiem dziesietnym.
-
-    Etykieta nosi barwe tekstu, nie serii. Stosowac wybiorczo.
-    """
-    for container in ax.containers:
-        texts = [f'{value:.{places}f}'.replace('.', ',') + suffix
-                 for value in container.datavalues]
-        ax.bar_label(container, labels=texts, fontsize=9, padding=2,
-                     color=TEXT_SECONDARY, **kwargs)
-
-
-def upper_triangle_mask(matrix):
-    """Maska ukrywajaca przekatna i gorny trojkat macierzy symetrycznej."""
-    return np.triu(np.ones_like(np.asarray(matrix), dtype=bool))

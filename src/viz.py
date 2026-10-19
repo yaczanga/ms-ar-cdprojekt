@@ -102,16 +102,12 @@ def plot_strategy(equity: pd.Series, benchmark: pd.Series, log: pd.DataFrame,
                   save: bool = False):
     """Krzywa kapitalu strategii na tle pasywnego kup-i-trzymaj.
 
-    Strategia jest przedmiotem badania i nosi akcent, benchmark jest
-    odniesieniem. Znaczniki transakcji nie sa trzecia seria, tylko adnotacja na
-    krzywej strategii - niosa barwe tekstu, a kupno od sprzedazy odroznia
-    ksztalt, czytelny takze w druku czarno-bialym.
-
-    Kupno stoi POD krzywa, sprzedaz NAD nia. Postawione na krzywej zlewaja sie
-    w jeden znak wszedzie tam, gdzie wyjscie nastepuje kilka tygodni po
-    wejsciu - a takich par jest w tym przebiegu wiekszosc. Odsuniecie liczone
-    jest w punktach typograficznych, wiec nie przesuwa znacznika wzgledem daty
-    ani wartosci portfela.
+    Strategia nosi akcent, benchmark jest odniesieniem, a znaczniki transakcji
+    sa adnotacja na krzywej strategii, nie trzecia seria: kupno od sprzedazy
+    odroznia ksztalt, czytelny takze w druku czarno-bialym. Kupno stoi POD
+    krzywa, sprzedaz NAD nia, z odsunieciem w punktach typograficznych, bo
+    znaki postawione na krzywej zlewaja sie w jeden przy wyjsciu kilka
+    tygodni po wejsciu.
     """
     fig, ax = plt.subplots(figsize=style.WIDE)
 

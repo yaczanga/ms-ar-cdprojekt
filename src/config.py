@@ -1,14 +1,8 @@
-"""Sciezki i parametry badania.
-
-Jedyne miejsce, w ktorym zapisane sa sciezki i stale. Kod poza tym modulem
-nie buduje sciezek z literalow.
-"""
+"""Sciezki i parametry badania - jedyne zrodlo stalych, nie powtarzane w kodzie."""
 
 from pathlib import Path
 
-# Korzen projektu wyznaczony wzgledem polozenia tego pliku: src/config.py ->
-# katalog nadrzedny src/ jest korzeniem. Dziala niezaleznie od katalogu
-# roboczego, z ktorego wystartowal notebook albo pytest.
+# Korzen liczony od polozenia tego pliku, nie od katalogu roboczego.
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 DATA_RAW = PROJECT_ROOT / "data" / "raw"
@@ -29,8 +23,7 @@ SEARCH_REPS_HISTORY = 10
 SEARCH_REPS_WALK_FORWARD = 5
 RETURN_SCALE = 100.0
 
-# Estymacja przeszukuje losowe punkty startowe, wiec bez ziarna kolejne
-# przebiegi daja nieznacznie rozne oszacowania wariancji rezimow.
+# Bez ziarna kolejne przebiegi daja rozne oszacowania wariancji rezimow.
 RANDOM_SEED = 0
 
 # Parametry strategii
