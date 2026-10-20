@@ -1,5 +1,7 @@
 # Reżimy zmienności a strategia inwestycyjna na akcjach CD Projekt
 
+[![testy](https://github.com/yaczanga/ms-ar-cdprojekt/actions/workflows/testy.yml/badge.svg)](https://github.com/yaczanga/ms-ar-cdprojekt/actions/workflows/testy.yml)
+
 Autoregresyjny model przełącznikowy Markowa rozpoznaje na tygodniowych stopach zwrotu dwa stany rynku i na tej podstawie decyduje o wejściu i wyjściu z pozycji. Na próbie testowej obejmującej 153 tygodnie strategia kończy z kapitałem 26 147,30 zł wobec 19 782,00 zł dla pasywnego kup-i-trzymaj. Symulacja nie uwzględnia kosztów transakcyjnych, a przy 22 transakcjach jest to ograniczenie, które przesądza o praktycznej wartości wyniku - prowizja 0,39% zjada około jednej trzeciej przewagi.
 
 ## Pytanie badawcze
